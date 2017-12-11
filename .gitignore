@@ -1,4 +1,4 @@
 .idea
 spark-java.iml
 target
-out/*
+data/out/*
