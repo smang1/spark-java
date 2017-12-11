@@ -22,7 +22,7 @@ public class MapExample {
         List<Integer> myList = Arrays.asList(1,2,3,4,5);
 
         JavaRDD<Integer> intRDD = sc.parallelize(myList);
-
+//multiply each element of the input RDD by 2
         JavaRDD<Integer> outRDD = intRDD.map(x -> x*2);
 
         outRDD.foreach(n ->System.out.println(n));
