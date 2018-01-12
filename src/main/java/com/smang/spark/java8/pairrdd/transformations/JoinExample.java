@@ -19,7 +19,8 @@ public class JoinExample {
         SparkConf conf = new SparkConf().setAppName("JoinExample").setMaster("local");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaPairRDD<String, String> inputPairRDD1 = sc.parallelizePairs(Arrays.asList(new Tuple2<String, String>("A", "a"),
+        JavaPairRDD<String, String> inputPairRDD1 = sc.parallelizePairs(Arrays.asList(
+                new Tuple2<String, String>("A", "a"),
                 new Tuple2<String, String>("B", "b"),
                 new Tuple2<String, String>("C", "C"),
                 new Tuple2<String, String>("X", "x"),
@@ -27,7 +28,8 @@ public class JoinExample {
                 )
         );
 
-        JavaPairRDD<String, Integer> inputPairRDD2 = sc.parallelizePairs(Arrays.asList(new Tuple2<String, Integer>("A", 1),
+        JavaPairRDD<String, Integer> inputPairRDD2 = sc.parallelizePairs(Arrays.asList(
+                new Tuple2<String, Integer>("A", 1),
                 new Tuple2<String, Integer>("C", 3),
                 new Tuple2<String, Integer>("X", 24),
                 new Tuple2<String, Integer>("E", 5),
