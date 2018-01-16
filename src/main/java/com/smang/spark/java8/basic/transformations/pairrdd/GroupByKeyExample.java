@@ -1,4 +1,4 @@
-package com.smang.spark.java8.pairrdd.transformations;
+package com.smang.spark.java8.basic.transformations.pairrdd;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
