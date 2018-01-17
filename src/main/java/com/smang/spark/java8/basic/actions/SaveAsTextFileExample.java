@@ -12,6 +12,7 @@ import java.util.Arrays;
  * Demonstrates SaveAsTextFile action
  * writes the content of an RDD to a file (HDFS or local).
  * Each element of the RDD is first converted to a line of String before writing it into a file
+ * Output path given to this action should not exist, else it will throw an error
  */
 public class SaveAsTextFileExample {
     public static void main(String[] args) {
