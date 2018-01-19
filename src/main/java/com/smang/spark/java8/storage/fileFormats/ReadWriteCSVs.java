@@ -14,9 +14,9 @@ public class ReadWriteCSVs {
     public static void main(String[] args) {
         String inputFile1 = "data/in/movies1.csv"; // contains"," within data
         String inputFile2 = "data/in/movies2.csv"; // Does not contain  "," within data
-        String outputFile = "data/out/ReadWriteCSVs";
+        String outputPath = "data/out/ReadWriteCSVs";
         SparkSession ss = SparkSession.builder()
-                .master("local").appName("")
+                .master("local").appName("ReadWriteCSVs")
                 .config("spark.sql.warehouse.dir", "file:///tmp/spark-warehouse").getOrCreate();
 
         JavaRDD<Movie> movies = ss.read().textFile(inputFile1).javaRDD()
@@ -45,7 +45,7 @@ public class ReadWriteCSVs {
         csvDataCustomSchema.show();
 
         csvDataCustomSchema.write().format("com.databricks.spark.csv").option("header", true)
-                .option("codec","org.apache.hadoop.io.compress.GzipCodec"). save(outputFile);
+                .option("codec","org.apache.hadoop.io.compress.GzipCodec"). save(outputPath);
 
 
 
