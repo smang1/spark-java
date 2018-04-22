@@ -20,17 +20,24 @@ public class RejectionExample {
         JavaSparkContext sc = new JavaSparkContext(conf);
 
         JavaRDD<String> input = sc.textFile(inputFile);
-        JavaRDD<PersonalDetails> output = input.filter(line ->{try {
-            PersonalDetails personalDetails = new ObjectMapper().readValue(line, PersonalDetails.class);
+        JavaRDD<PersonalDetails> correctData = input.filter(line ->{try {
+            new ObjectMapper().readValue(line, PersonalDetails.class);
             return true;
         }catch (Exception e){
             return false;
         }
         }).map(line -> new ObjectMapper().readValue(line, PersonalDetails.class));
-        output.foreach(line -> System.out.println(line));
-       /* //TODO Use Map partition for better performance
-        JavaRDD<PersonalDetails> personalDetails = inputDataset.toJavaRDD().map(line -> new ObjectMapper().readValue(line, PersonalDetails.class));
-        personalDetails.foreach(x -> System.out.println(String.format("cid: %s, name: %s, dob: %s", x.getCid(), x.getFirstName(), x.getDateOfBirth())));
-*/
+        correctData.foreach(line -> System.out.println(line.getFirstName()));
+
+
+        JavaRDD<String> rejectedData = input.filter(line ->{try {
+            new ObjectMapper().readValue(line, PersonalDetails.class);
+            return false;
+        }catch (Exception e){
+            return true;
+        }
+        });
+        rejectedData.foreach(line -> System.out.println(line));
+
     }
 }

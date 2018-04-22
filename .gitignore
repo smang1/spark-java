@@ -3,3 +3,4 @@ spark-java.iml
 target
 data/out/*
 data/in/cloudera
+$*
