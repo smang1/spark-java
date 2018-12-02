@@ -10,6 +10,11 @@
     <properties>
         <java-version>1.8</java-version>
         <spark-version>2.0.0</spark-version>
+        <kafka_2.10.version>0.10.1.2.6.3.0-235</kafka_2.10.version>
+        <hadoop-unit.version>2.9</hadoop-unit.version>
+        <hadoop-mini-clusters.version>0.1.15</hadoop-mini-clusters.version>
+        <maven-compiler-plugin-version>2.3.2</maven-compiler-plugin-version>
+        <tmp.dir>E:\tmp</tmp.dir>
     </properties>
     <dependencies>
         <dependency>
@@ -26,6 +31,16 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-hivecontext-compatibility_2.10</artifactId>
             <version>${spark-version}-preview</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>2.7.1</version>
         </dependency>
         <!-- Unit Testing dependencies-->
         <dependency>
@@ -46,7 +61,70 @@
             <version>1.16.20</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--Testing dependencies-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-client-hdfs</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-client-hive</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-client-spark</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.10</artifactId>
+            <version>0.10.2.2</version>
+            <!--<version>0.10.1.2.6.3.0-235</version>-->
+        </dependency>
+
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-client-kafka</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-commons</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.jetoile.hadoop</groupId>
+            <artifactId>hadoop-unit-zookeeper</artifactId>
+            <version>2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -58,7 +136,7 @@
                     <target>${java-version}</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -70,6 +148,93 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IntegrationTest.java</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/*IntegrationTest.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>hadoop-unit-maven-plugin</artifactId>
+                <groupId>fr.jetoile.hadoop</groupId>
+                <version>${hadoop-unit.version}</version>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <goals>
+                            <goal>embedded-start</goal>
+                        </goals>
+                        <phase>pre-integration-test</phase>
+                    </execution>
+                    <execution>
+                        <id>embedded-stop</id>
+                        <goals>
+                            <goal>embedded-stop</goal>
+                        </goals>
+                        <phase>post-integration-test</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <components>
+                        <componentArtifact implementation="fr.jetoile.hadoopunit.ComponentArtifact">
+                            <componentName>HDFS</componentName>
+                            <artifact>fr.jetoile.hadoop:hadoop-unit-hdfs:${hadoop-unit.version}</artifact>
+                            <properties>
+                                <hdfs.temp.dir>${tmp.dir}/tmp/embedded_hdfs</hdfs.temp.dir>
+                            </properties>
+                        </componentArtifact>
+                        <componentArtifact implementation="fr.jetoile.hadoopunit.ComponentArtifact">
+                            <componentName>ZOOKEEPER</componentName>
+                            <artifact>fr.jetoile.hadoop:hadoop-unit-zookeeper:${hadoop-unit.version}</artifact>
+                            <properties>
+                                <zookeeper.temp.dir>${tmp.dir}/tmp/embedded_zookeeper</zookeeper.temp.dir>
+                            </properties>
+                        </componentArtifact>
+                        <componentArtifact implementation="fr.jetoile.hadoopunit.ComponentArtifact">
+                            <componentName>HIVEMETA</componentName>
+                            <artifact>fr.jetoile.hadoop:hadoop-unit-hive:${hadoop-unit.version}</artifact>
+                            <properties>
+                                <hive.temp.dir>${tmp.dir}/tmp/embedded_hive</hive.temp.dir>
+                            </properties>
+                        </componentArtifact>
+                        <componentArtifact implementation="fr.jetoile.hadoopunit.ComponentArtifact">
+                            <componentName>HIVESERVER2</componentName>
+                            <artifact>fr.jetoile.hadoop:hadoop-unit-hive:${hadoop-unit.version}</artifact>
+                        </componentArtifact>
+                        <componentArtifact implementation="fr.jetoile.hadoopunit.ComponentArtifact">
+                            <componentName>KAFKA</componentName>
+                            <artifact>fr.jetoile.hadoop:hadoop-unit-kafka:${hadoop-unit.version}</artifact>
+                            <properties>
+                                <kafka.temp.dir>${tmp.dir}/tmp/embedded_kafka</kafka.temp.dir>
+                            </properties>
+                        </componentArtifact>
+                    </components>
+
+                </configuration>
+
             </plugin>
         </plugins>
     </build>

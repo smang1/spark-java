@@ -3,6 +3,7 @@ import com.holdenkarau.spark.testing.SharedJavaSparkContext;
 import com.smang.spark.java8.examples.SuitsAndValues;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.stringtemplate.v4.ST;
 import scala.Tuple2;
@@ -12,7 +13,7 @@ import scala.reflect.ClassTag$;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-
+@Ignore
 public class SparkTest extends SharedJavaSparkContext implements Serializable {
     private static final long serialVersionUID = -5681683598336701496L;
 

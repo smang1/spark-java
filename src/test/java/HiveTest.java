@@ -1,9 +1,11 @@
 import com.holdenkarau.spark.testing.SharedJavaSparkContext;
 import org.apache.spark.sql.hive.HiveContext;
 import org.apache.spark.sql.hive.test.TestHiveContext;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.spark.sql.Row;
 //implements Serializable
+@Ignore
 public class HiveTest extends SharedJavaSparkContext  {
     @Test
     public void verifyCreateTableTest() {

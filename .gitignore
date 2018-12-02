@@ -4,3 +4,5 @@ target
 data/out/*
 data/in/cloudera
 $*
+metastore_db
+derby.log
